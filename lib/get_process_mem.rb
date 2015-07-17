@@ -16,7 +16,7 @@ class GetProcessMem
 
     @status_file  = Pathname.new "/proc/#{@pid}/status"
     @linux        = @status_file.exist?
-    @mem_type     = (options[:mem_type] || "rss").downcase
+    @mem_type     = options.fetch(:mem_type, "rss").downcase
   end
 
   def linux?
@@ -25,7 +25,7 @@ class GetProcessMem
 
   def bytes
     memory = (linux? && linux_status_memory)
-    memory ||= ps_memory
+    @bytes ||= memory || ps_memory
   end
 
   def kb(b = bytes)
@@ -38,11 +38,6 @@ class GetProcessMem
 
   def gb(b = bytes)
     (b/BigDecimal.new(GB_TO_BYTE)).to_f
-  end
-
-  def inspect
-    b = bytes
-    "#<#{self.class}:0x%08x @mb=#{ mb b } @gb=#{ gb b } @kb=#{ kb b } @bytes=#{b}>" % (object_id * 2)
   end
 
   def mem_type=(mem_type)
