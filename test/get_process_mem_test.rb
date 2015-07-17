@@ -13,12 +13,6 @@ class GetProcessMemTest < Test::Unit::TestCase
     assert @mem.bytes > 0
   end
 
-  def test_linux_smap
-    delta = 1
-    bytes = @mem.linux_memory(fixture_path("heroku-bash-smap"))
-    assert_in_delta BigDecimal.new("2122240.0"), bytes, delta
-  end
-
   def test_linux_status
     bytes = @mem.linux_status_memory(fixture_path("heroku-bash-status"))
     assert_equal bytes, 2080768
